@@ -1,50 +1,231 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Sơn Lý Hồng Đức</title>
-     <link rel="shortcut icon" href="./rose.png">
-     <link rel="stylesheet" href="style.css">
-     <link rel="preconnect" href="https://fonts.gstatic.com">
-     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Đăng Nhập và Đăng Ký</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .loading-container,
+        .login-container,
+        .register-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out; /* Hiệu ứng rõ nét dần trong 1 giây */
+        }
+
+        .loading-container img {
+            width: 200px; /* Điều chỉnh kích thước hình ảnh dạng gif */
+        }
+
+        .loading-container {
+            opacity: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .login-container h2,
+        .register-container h2 {
+            color: #333333;
+            margin-bottom: 15px;
+        }
+
+        .login-form,
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .input-group label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            color: #333333;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .input-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-group button:hover {
+            background-color: #2980b9;
+        }
+
+        .bottom-text {
+            margin-top: 15px;
+            color: #777777;
+            font-size: 14px;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="loading-container animate__animated animate__fadeIn">
+        <img src="https://www.icegif.com/wp-content/uploads/2023/07/icegif-1262.gif" alt="Đang tải..."> <!-- Thay "y....." bằng đường dẫn hình ảnh của bạn -->
+    </div>
+
+    <div class="login-container hidden animate__animated animate__fadeIn">
+        <h2>Đăng Nhập - Admin</h2>
+        <form class="login-form" onsubmit="login()">
+            <div class="input-group">
+                <label for="username">Tên người dùng:</label>
+                <input type="text" id="username" placeholder="Nhập tên tài khoảng" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" placeholder="Nhập mật khẩu" name="password" required>
+            </div>
+            <div class="input-group">
+                <button type="submit">Đăng Nhập</button>
+            </div>
+        </form>
+        <p class="bottom-text">Chưa có tài khoản? <a href="#" onclick="showRegisterForm()">Đăng ký ngay</a></p>
+    </div>
+
+    <div class="register-container hidden animate__animated animate__fadeIn">
+        <h2>Đăng Ký - Admin</h2>
+        <form class="register-form" onsubmit="register()">
+            <div class="input-group">
+                <label for="newUsername">Tên người dùng:</label>
+                <input type="text" id="newUsername" placeholder="Nhập tên tài khoảng" name="newUsername" required>
+            </div>
+            <div class="input-group">
+                <label for="newPassword">Mật khẩu:</label>
+                <input type="password" id="newPassword" placeholder="Nhập mật khẩu" name="newPassword" required>
+            </div>
+            <div class="input-group">
+                <button type="submit">Đăng Ký</button>
+            </div>
+        </form>
+        <p class="bottom-text">Đã có tài khoản? <a href="#" onclick="showLoginForm()">Đăng nhập ngay</a></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        // Mảng lưu thông tin tài khoản
+        const accounts = [
+            { username: 'Hongduc1010', password: 'Slhd1133#' },
+            // Thêm các tài khoản khác tương tự ở đây
+        ];
+
+        // Hàm này sẽ được gọi sau khi 4 giây
+        setTimeout(() => {
+            document.querySelector('.loading-container').style.display = 'none';
+            document.querySelector('.login-container').classList.remove('hidden');
+            document.querySelector('.login-container').style.opacity = 1;
+        }, 4000);
+
+        function login() {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Kiểm tra đăng nhập
+            const foundAccount = accounts.find(account => account.username === username && account.password === password);
+
+            if (foundAccount) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng nhập thành công!',
+                    showCancelButton: true,
+                    cancelButtonText: 'Đóng',
+                }).then(() => {
+                    window.location.href = 'https://www.facebook.com/profile.php/?id=100015471603158'; // Thay thế 'duong-dan-cua-ban' bằng đường dẫn thực tế
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Sai tên đăng nhập hoặc mật khẩu',
+                    showCancelButton: true,
+                    cancelButtonText: 'Đóng',
+                });
+            }
+        }
+
+        function register() {
+            event.preventDefault();
+            var newUsername = document.getElementById('newUsername').value;
+            var newPassword = document.getElementById('newPassword').value;
+
+            // Kiểm tra tài khoản đã tồn tại
+            const isExistingAccount = accounts.some(account => account.username === newUsername);
+
+            if (isExistingAccount) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Tài khoản đã tồn tại',
+                    showCancelButton: true,
+                    cancelButtonText: 'Đóng',
+                });
+            } else {
+                // Thêm tài khoản mới
+                accounts.push({ username: newUsername, password: newPassword });
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng ký thành công!',
+                    showCancelButton: true,
+                    cancelButtonText: 'Đóng',
+                }).then(() => {
+                    // Sau khi đăng ký, chuyển về form đăng nhập
+                    showLoginForm();
+                });
+            }
+        }
+
+        function showRegisterForm() {
+            document.querySelector('.login-container').classList.add('hidden');
+            document.querySelector('.register-container').classList.remove('hidden');
+            document.querySelector('.register-container').style.opacity = 1;
+        }
+
+        function showLoginForm() {
+            document.querySelector('.register-container').classList.add('hidden');
+            document.querySelector('.login-container').classList.remove('hidden');
+            document.querySelector('.login-container').style.opacity = 1;
+        }
+    </script>
 </body>
+
 </html>
-<section>
-     <div class="img-bg">
-         <img src="https://scontent.fsgn5-3.fna.fbcdn.net/v/t39.30808-6/274000662_1206970756495300_782745917360633732_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=EQuXGhFYDpQAX_-FE_z&_nc_ht=scontent.fsgn5-3.fna&oh=00_AT_0EnW9-cbOE83X8IfoD5_UmofFNbr31UAuI0WGtIFCjg&oe=63141FBE" alt="Hình Ảnh Minh Họa">
-     </div>
-     <div class="noi-dung">
-         <div class="form">
-             <h2>Sơn Lý Hồng Đức <i data-visualcompletion="css-img" aria-label="Tài khoản đã xác minh" class="" role="img" style="background-image: url(&quot;https://static.xx.fbcdn.net/rsrc.php/v3/yG/r/4rwIr6rN9G_.png&quot;); background-position: -154px -118px; background-size: 190px 190px; width: 16px; height: 16px; background-repeat: no-repeat; display: inline-block;"></i></h2>
-             <form action="">
-                 <div class="input-form">
-                     <span>Tên Người Dùng</span>
-                     <input type="text" name="">
-                 </div>
-                 <div class="input-form">
-                     <span>Mật Khẩu</span>
-                     <input type="password" name="">
-                 </div>
-                 <div class="nho-dang-nhap">
-                     <label><input type="checkbox" name=""> Nhớ Đăng Nhập</label>
-                 </div>
-                 <div class="input-form">
-                     <input type="submit" value="Đăng Nhập">
-                 </div>
-                 <div class="input-form">
-                     <p>Bạn Chưa Có Tài Khoản? <a href="#">Đăng Ký</a></p>
-                 </div>
-             </form>
-             <h3>Đăng Nhập Bằng Mạng Xã Hội</h3>
-             <ul class="icon-dang-nhap">
-                 <li><i class="fa fa-facebook" aria-hidden="true"></i></li>
-                 <li><i class="fa fa-google" aria-hidden="true"></i></li>
-                 <li><i class="fa fa-twitter" aria-hidden="true"></i></li>
-             </ul>
-         </div>
-     </div>
- </section>
